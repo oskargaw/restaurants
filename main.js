@@ -35,7 +35,12 @@ class App extends React.Component {
             {
               tabBarPosition: 'bottom',
               swipeEnabled: false,
-              animationEnabled: false
+              animationEnabled: false,
+              tabBarOptions: {
+                labelStyle: { fontSize: 10 },
+                showIcon: true,
+                style: { height: 60 }
+              }
             }
           )
         }
