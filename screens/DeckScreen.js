@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Platform, Image, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { Container, View, DeckSwiper, Card, CardItem, Thumbnail, Text, Left, Body } from 'native-base';
+import * as actions from '../actions';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-const cards = [
+const restaurants = [
   {
     text: 'Card One',
     name: 'One',
@@ -39,14 +41,15 @@ class DeckScreen extends Component {
       <Container>
         <View>
             <DeckSwiper
-                dataSource={cards}
-                renderItem={item =>
+                dataSource={restaurants}
+                onSwipeRight={restaurant => this.props.likeRestaurant(restaurants[0])}
+                renderItem={restaurant =>
                     <Card style={{ marginTop: 50, marginLeft: 5, marginRight: 5 }}>
                         <CardItem>
                             <Left>
-                                <Thumbnail source={item.image} />
+                                <Thumbnail source={restaurant.image} />
                                 <Body>
-                                    <Text>{item.text}</Text>
+                                    <Text>{restaurant.text}</Text>
                                     <Text note>NativeBase</Text>
                                 </Body>
                             </Left>
@@ -55,11 +58,11 @@ class DeckScreen extends Component {
                             <Image
                               style={{ flex: 1 }}
                               resizeMode='contain'
-                              source={item.image} />
+                              source={restaurant.image} />
                         </CardItem>
                         <CardItem>
                             <Icon name='favorite' color={'#ED4A6A'} />
-                            <Text>{item.name}</Text>
+                            <Text>{restaurant.name}</Text>
                         </CardItem>
                     </Card>
                 }
@@ -70,4 +73,4 @@ class DeckScreen extends Component {
   }
 }
 
-export default DeckScreen;
+export default connect(null, actions)(DeckScreen);

@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
-import { MapView } from 'expo';
+import { Platform, Text, View, Dimensions } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
+import { MapView, Constants, Location, Permissions } from 'expo';
+
+const { width, height } = Dimensions.get('window');
+const LATITUDE_DELTA = 0.01;
+const ASPECT_RATIO = width / height;
+
+const GEOLOCATION_OPTIONS = { enableHighAccuracy: true };
 
 class MapScreen extends Component {
   static navigationOptions = {
@@ -12,63 +18,35 @@ class MapScreen extends Component {
   }
 
   state = {
-    mapLoaded: false,
-    region: {
-      longitude: 19.9449799,
-      latitude: 50.0646501,
-      longitudeDelta: 0.04,
-      latitudeDelta: 0.09
-    }
+    location: {
+      coords: {
+        latitude: 0, longitude: 0
+      }
+    },
+  };
+
+  componentWillMount() {
+    Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged);
   }
 
-  componentDidMount() {
-    this.setState({ mapLoaded: true });
-  }
-
-  onRegionChangeComplete = (region) => {
-    this.setState({ region });
-  }
-
-  onButtonPress = () => {
-    this.props.navigation.navigate('deck');
+  locationChanged = (location) => {
+    region = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+    },
+    this.setState({location, region})
   }
 
   render() {
-    if (!this.state.mapLoaded) {
-      return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <ActivityIndicator size="large" />
-        </View>
-      );
-    }
-
     return (
-      <View style={{ flex: 1 }}>
         <MapView
+          style={{ flex: 0.5 }}
+          showsUserLocation={true}
           region={this.state.region}
-          style={{ flex: 1 }}
-          onRegionChangeComplete={this.onRegionChangeComplete}
         />
-        <View style={styles.buttonContainer}>
-          <Button
-            large
-            title="Search This Area"
-            backgroundColor="#009688"
-            icon={{ name: 'search' }}
-            onPress={this.onButtonPress}
-          />
-        </View>
-      </View>
     );
-  }
-}
-
-const styles = {
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0
   }
 }
 
