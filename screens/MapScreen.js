@@ -39,14 +39,38 @@ class MapScreen extends Component {
     this.setState({location, region})
   }
 
+  onButtonPress = () => {
+    this.props.navigation.navigate('deck');
+  }
+
   render() {
     return (
+      <View style={{ flex: 1 }}>
         <MapView
-          style={{ flex: 0.5 }}
+          style={{ flex: 1 }}
           showsUserLocation={true}
           region={this.state.region}
         />
+        <View style={styles.buttonContainer}>
+          <Button
+            large
+            title="Search Restaurants Nearby"
+            backgroundColor="#009688"
+            icon={{ name: 'search' }}
+            onPress={this.onButtonPress}
+          />
+        </View>
+      </View>
     );
+  }
+}
+
+const styles = {
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0
   }
 }
 
